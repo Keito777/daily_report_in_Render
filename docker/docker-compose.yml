@@ -14,18 +14,19 @@ services:
 
   web:
     build: # docker-compose.ymlがあるフォルダから見てビルド
-      context: ..
+      context: .. # コンテキストの指定（Dockerイメージの対象となるフォルダ）
       dockerfile: ./docker/Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    # command: python manage.py runserver 0.0.0.0:8000 # DockerfileのCMDと同じ（コンテナ起動時に実行するコマンド）
     volumes:
-      - ..:/app # docker-compose.ymlがあるフォルダをWORKDIRにマウント
+      - ..:/daily_report_in_render # docker-compose.ymlがあるフォルダからみて全てのフォルダをWORKDIRにマウント（..:/. これだとエラー。WORKDIR名を直接書かないとダメみたい）
     ports:
-      - "8000:8000"
+      - "8000:8000" # ホストマシンのポート:コンテナのポート（http://localhost:8000でコンテナのDjangoにアクセスできる）
     depends_on:
-      - db
+      - db # 依存関係の指定。先にdbコンテナを起動する必要がある。（先にDBを起動していないとアプリ的に問題なので重要な設定）
     environment:
       - DJANGO_SETTINGS_MODULE=report_project.settings
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
 
+# Dockerのボリュームを初期化（ここで初期化したものをdbコンテナのvolumesで利用している）※ これがないとdbでエラー
 volumes:
   postgres_data:

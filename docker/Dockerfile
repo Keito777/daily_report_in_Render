@@ -5,11 +5,12 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # 標準出力の高速化
 ENV PYTHONUNBUFFERED=1
 
+# コンテナの作業ディレクトリを指定
 WORKDIR /daily_report_in_render
 
 # Dockerfileから見て../（プロジェクトルートdir）をコンテナのWORKDIRにコピー
 COPY .. .
-# Dockerfileから見てrequirements.txtのパスを指定
+# WORKDIR直下のrequirements.txtをinstall（コンテナ内）※ 上記でコピー済み
 RUN pip install --no-cache-dir -r requirements.txt
 
 
