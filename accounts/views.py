@@ -39,7 +39,7 @@ class Logout(LoginRequiredMixin, LogoutView):
 '''サインアップ'''
 class Signup(CreateView):
     template_name = 'accounts/signup.html'
-    form_class =SignupForm
+    form_class = SignupForm
     success_url = reverse_lazy('accounts:signup_success')
 
     # templateに表示するデータを追加するためオーバーライド

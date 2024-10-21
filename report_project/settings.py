@@ -34,8 +34,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'daily-report.onrender.com']
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'daily-report.onrender.com']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -86,8 +86,30 @@ WSGI_APPLICATION = 'report_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-default_dburl = "sqlite:///" + str(BASE_DIR / "db.sqlite3")
-DATABASES = {'default': dj_database_url.config(default=default_dburl)}
+# default_dburl = "sqlite:///" + str(BASE_DIR / "db.sqlite3")
+# # DATABASES = {'default': dj_database_url.config(default=default_dburl)}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get('POSTGRES_DB'),
+#         'USER': os.environ.get('POSTGRES_USER'),
+#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+#         'HOST': os.environ.get('DB_HOST', 'db'),
+#         'PORT': os.environ.get('DB_PORT', '5432'),
+#     }
+# }
+from django.core.exceptions import ImproperlyConfigured
+
+try:
+    DATABASE_URL = os.environ['DATABASE_URL']
+except KeyError:
+    raise ImproperlyConfigured("DATABASE_URL environment variable must be set.")
+
+import dj_database_url
+DATABASES = {
+    'default': dj_database_url.config(default=DATABASE_URL)
+}
+
 # postgresqlを設定する場合の書式は、postgresql://user_name:password@localhost:port/database_name（以下では、既存のものを書籍に当てはめている）
 # DATABASES = {'default': dj_database_url.parse('postgresql://postgres:password1@localhost:5432/appdb')}
 
@@ -144,5 +166,5 @@ LOGOUT_REDIRECT_URL= 'accounts:logout'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-DEBUG = False # デプロイ時、Falseに修正
-#DEBUG = True
+# DEBUG = False # デプロイ時、Falseに修正
+DEBUG = True
